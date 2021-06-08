@@ -1,4 +1,5 @@
 function hash = str2hash(str, option)
+    % the return value is char array and not string
     % Create any specified cryptographic hasher.
     % Supported string args include 'MD5', 'SHA1', 'SHA256', 'SHA384', 'SHA512'.
     % That's what I could figure out by random guessing...  'SHA3' didn't work.

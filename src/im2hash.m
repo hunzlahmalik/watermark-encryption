@@ -1,8 +1,5 @@
 function hash = im2hash(inputimg, option)
-    % Example Code:    Create an MD5 crypto-hash of an arbitrary string, "str"
-    % Main class of interest:    System.Security.Cryptography.HashAlgorithm
-
-    % Image to string
+    % Image to string beacuse we can only hash a string
     str = im2str(inputimg);
     hash=str2hash(str,option);
 end

@@ -8,6 +8,7 @@ hash = im2hash(im, 'MD5');
 W3 = str2binarr(hash);
 W = [W1, W2, W3];
 eW = encrypt(W, 'this is my password');
+
 dW = decrypt(eW, 'this is my password');
 disp(isequal(W, dW));
 dW = decrypt(eW, 'this is my wrong password');
