@@ -2,6 +2,8 @@
 im = imread('logo.png');
 im = imresize(im, [64, 64]);
 
+im=lsbzero(im);
+
 W1 = im2binarr(rgb2gray(im));
 W2 = file2binarr('EPR.txt');
 hash = im2hash(im, 'MD5');
@@ -50,3 +52,4 @@ title('embeded scramble')
 out = imunscramble(embed, ROI, 10);
 figure, imshow(out);
 title('embeded unscramble');
+imsave(out);
