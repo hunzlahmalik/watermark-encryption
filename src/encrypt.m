@@ -1,6 +1,6 @@
 function encrypted = encrypt(data, key)
     keyhash = str2hash(key, 'MD5');
-    key = str2binarr(keyhash);
+    key = str2bin(keyhash);
 
     [~, keylen] = size(key);
     [~, datalen] = size(data);

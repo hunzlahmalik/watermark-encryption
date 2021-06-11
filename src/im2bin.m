@@ -1,4 +1,4 @@
-function binarr = im2binarr(inputimg)
+function binarr = im2bin(inputimg)
     bw = imbinarize(inputimg);
     %reshaping to convert to the single array with correct sequence
     binarr = num2cell(reshape(bw.', 1, []));

@@ -1,17 +1,32 @@
+keyencryption = 'this is my password';
+keyscramble=10;
+
+
+
 %File reading
-im = imread('logo.png');
-im = imresize(im, [64, 64]);
+logo = imread('logo.png');
+logo = imresize(logo, [64, 64]);
 
+
+
+W1 = im2bin(rgb2gray(logo));
+mymi=bin2im(W1,64,64);
+figure,imshow(mymi);
+ 
+
+
+W2 = file2bin('EPR.txt');
+
+
+im=imread('ctscan.jpeg');
 im=lsbzero(im);
-
-W1 = im2binarr(rgb2gray(im));
-W2 = file2binarr('EPR.txt');
 hash = im2hash(im, 'MD5');
-W3 = str2binarr(hash);
-W = [W1, W2, W3];
-eW = encrypt(W, 'this is my password');
+W3 = str2bin(hash);
 
-dW = decrypt(eW, 'this is my password');
+W = [W1, W2, W3];
+eW = encrypt(W, keyencryption);
+
+dW = decrypt(eW, keyencryption);
 disp(isequal(W, dW));
 dW = decrypt(eW, 'this is my wrong password');
 disp(isequal(W, dW));
@@ -23,33 +38,39 @@ RONI = roni(ROI, 'ctscan.jpeg');
 figure, imshow(RONI);
 
 %%%%%%%Idhar scrambling ho rahi ha but ye abhi sahi nahi ha
-% rng(10);
-% vec = randperm(numel(RONI));
-% vec = reshape(vec, size(RONI));
-% out = RONI(vec);
-% figure, imshow(out);
-% title('scramble')
-% 
-% embed = embedd(eW, out); %embedding function call
-% 
-% figure, imshow(embed);
-% title('embeded scramble')
-% reconstruct = zeros(size(embed), class(embed));
-% reconstruct(vec) = embed;
-% figure, imshow(reconstruct);
-% title('embeded rescramble')
-%%%%%%%
-
-out = imscramble(RONI, ROI, 10);
+rng(keyscramble);
+vec = randperm(numel(RONI));
+vec = reshape(vec, size(RONI));
+out = RONI(vec);
 figure, imshow(out);
-title('scramble');
+title('scramble')
 
 embed = embedd(eW, out); %embedding function call
 
 figure, imshow(embed);
 title('embeded scramble')
+reconstruct = zeros(size(embed), class(embed));
+reconstruct(vec) = embed;
+figure, imshow(reconstruct);
+title('embeded rescramble')
 
-out = imunscramble(embed, ROI, 10);
-figure, imshow(out);
-title('embeded unscramble');
-imsave(out);
+TODO join ROI AND RONI
+
+
+
+
+%%%%%%%
+
+% scrambimg = imscramble(RONI, ROI, 10);
+% figure, imshow(scrambimg);
+% title('scramble');
+% 
+% embed = embedd(eW, scrambimg); %embedding function call
+% 
+% figure, imshow(embed);
+% title('embeded scramble')
+% 
+% unscrambimg = imunscramble(embed, ROI, 10);
+% figure, imshow(unscrambimg);
+% title('embeded unscramble');
+imsave(unscrambimg);
