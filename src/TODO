@@ -1,0 +1,6 @@
+lsb embedding is not correct!
+1- the pixel bits are not correctly changed
+2- please avoid the area that contains ROI, and take ROI as parameter
+
+
+write a code for lsb extration. only from the RONI area and avoid ROI area
