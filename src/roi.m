@@ -1,5 +1,4 @@
-function border_img = roi(input_image)
-    ct_image = imread(input_image);
+function border_img = roi(ct_image)
     Tfinal = multithresh(ct_image);
     %creating black boundary around image
     border_img = padarray(ct_image, [1 1], 0, 'both');

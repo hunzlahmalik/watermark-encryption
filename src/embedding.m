@@ -1,61 +1,70 @@
-scanpath = 'ctscan.jpeg';
-logopath = 'logo.png';
-eprpath = 'EPR.txt';
-keyencryption = 'this is my password';
-keyscramble = 10;
+% scanpath = 'ctscan.jpeg';
+% logopath = 'logo.png';
+% eprpath = 'EPR.txt';
+% keyencryption = 'this is my password';
+% keyscramble = 10;
 
-%File reading
-logo = imread(logopath);
-logo = imresize(logo, [64, 64]); % 64x64 beaucse we need 4096bits total
-logo = rgb2gray(logo);
-figure, imshow(logo);
-title('logo');
+function watermarked = embedding(scanpath, logopath, eprpath, keyencryption, keyscramble)
 
-W1 = im2bin(logo);
-W2 = file2bin(eprpath);
+    %File reading
+    logo = imread(logopath);
+    logo = imresize(logo, [64, 64]); % 64x64 beaucse we need 4096bits total
+    logo = rgb2gray(logo);
+    figure, imshow(logo);
+    title('logo');
 
-im = imread(scanpath);
-figure, imshow(im);
-title('Orignal');
-im = lsbzero(im);
-hash = im2hash(im, 'MD5');
-W3 = str2bin(hash);
+    W1 = im2bin(logo);
+    W2 = file2bin(eprpath);
 
-W = [W1, W2, W3];
-eW = encrypt(W, keyencryption);
+    im = imread(scanpath);
+    figure, imshow(im);
+    title('Orignal');
+    im = lsbzero(im);
+    hash = im2hash(im, 'MD5');
+    W3 = str2bin(hash);
 
-dW = decrypt(eW, keyencryption);
-disp(isequal(W, dW));
-dW = decrypt(eW, 'this is my wrong password');
-disp(isequal(W, dW));
+    W = [W1, W2, W3];
+    eW = encrypt(W, keyencryption);
 
-ROI = roi(scanpath);
-figure, imshow(ROI);
-title('ROI');
+    dW = decrypt(eW, keyencryption);
+    disp(isequal(W, dW));
+    dW = decrypt(eW, 'this is my wrong password');
+    disp(isequal(W, dW));
 
-RONI = roni(ROI, scanpath);
-figure, imshow(RONI);
-title('RONI');
+    ROI = roi(scanpath);
+    figure, imshow(ROI);
+    title('ROI');
 
-%scrrambling
-out = imscramble(RONI, keyscramble);
-figure, imshow(out);
-title('scramble');
+    RONI = roni(ROI, scanpath);
+    figure, imshow(RONI);
+    title('RONI');
 
-%embedding function call
-embed = lsbembed(eW, out);
-figure, imshow(embed);
-title('embeded scramble');
+    %scrrambling
+    out = getoroni(RONI, ROI);
+    figure, imshow(out);
+    title('ORONI');
+    out = imscramble(out, keyscramble);
+    figure, imshow(out);
+    title('scramble');
 
-%un-scrambling
-reconstruct = imunscramble(embed, keyscramble);
-figure, imshow(reconstruct);
-title('embeded rescramble');
+    %embedding function call
+    embed = lsbembed(eW, out);
+    figure, imshow(embed);
+    title('embeded scramble');
 
-% join ROI AND RONI
+    %un-scrambling
+    reconstruct = imunscramble(embed, keyscramble);
+    figure, imshow(reconstruct);
+    title('embeded rescramble');
+    reconstruct = putoroni(reconstruct, RONI, ROI);
+    figure, imshow(reconstruct);
+    title('embeded FULLORONI');
 
-finalim = combine(ROI, reconstruct);
+    % join ROI AND RONI
 
-figure, imshow(finalim);
-title('finalimage');
-imsave(finalim);
+    finalim = combine(ROI, reconstruct);
+
+    figure, imshow(finalim);
+    title('finalimage');
+    imsave(finalim);
+end

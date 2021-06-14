@@ -1,5 +1,4 @@
-function roni_img = roni(ROI, input_img)
-    org_img = imread(input_img);
+function roni_img = roni(ROI, org_img)
     roni_img = padarray(org_img, [1 1], 0, 'both');
     [row, col] = size(roni_img);
 
