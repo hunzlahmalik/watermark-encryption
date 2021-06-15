@@ -106,4 +106,6 @@ function border_img = roi(ct_image)
 
     end
 
+    border_img = border_img(2:end - 1, 2:end - 1);
+
 end

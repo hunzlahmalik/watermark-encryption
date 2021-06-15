@@ -6,65 +6,78 @@
 
 function watermarked = embedding(scanpath, logopath, eprpath, keyencryption, keyscramble)
 
+    SHOW = false;
+
     %File reading
     logo = imread(logopath);
     logo = imresize(logo, [64, 64]); % 64x64 beaucse we need 4096bits total
     logo = rgb2gray(logo);
-    figure, imshow(logo);
-    title('logo');
 
     W1 = im2bin(logo);
     W2 = file2bin(eprpath);
 
-    im = imread(scanpath);
-    figure, imshow(im);
-    title('Orignal');
-    im = lsbzero(im);
+    scanim = imread(scanpath);
+
+    im = lsbzero(scanim);
     hash = im2hash(im, 'MD5');
     W3 = str2bin(hash);
 
     W = [W1, W2, W3];
     eW = encrypt(W, keyencryption);
+    eW = [eW, true]; %to check the ending for us
 
-    dW = decrypt(eW, keyencryption);
-    disp(isequal(W, dW));
-    dW = decrypt(eW, 'this is my wrong password');
-    disp(isequal(W, dW));
+    % dW = decrypt(eW, keyencryption);
+    % disp(isequal(W, dW));
+    % dW = decrypt(eW, 'this is my wrong password');
+    % disp(isequal(W, dW));
 
-    ROI = roi(scanpath);
-    figure, imshow(ROI);
-    title('ROI');
+    ROI = roi(scanim);
 
-    RONI = roni(ROI, scanpath);
-    figure, imshow(RONI);
-    title('RONI');
+    RONI = roni(ROI, scanim);
 
     %scrrambling
-    out = getoroni(RONI, ROI);
-    figure, imshow(out);
-    title('ORONI');
-    out = imscramble(out, keyscramble);
-    figure, imshow(out);
-    title('scramble');
+    REALORONI = getoroni(RONI, ROI);
+
+    ORONI = lsbzero(REALORONI);
+
+    out = imscramble(ORONI, keyscramble);
 
     %embedding function call
     embed = lsbembed(eW, out);
-    figure, imshow(embed);
-    title('embeded scramble');
 
     %un-scrambling
     reconstruct = imunscramble(embed, keyscramble);
-    figure, imshow(reconstruct);
-    title('embeded rescramble');
-    reconstruct = putoroni(reconstruct, RONI, ROI);
-    figure, imshow(reconstruct);
-    title('embeded FULLORONI');
+
+    reconstruct2 = putoroni(reconstruct, RONI, ROI);
 
     % join ROI AND RONI
+    watermarked = combine(ROI, reconstruct2);
 
-    finalim = combine(ROI, reconstruct);
+    % imwrite(watermarked, 'ctscan_watermarked.png');
 
-    figure, imshow(finalim);
-    title('finalimage');
-    imsave(finalim);
+    if SHOW
+        figure, imshow(logo);
+        title('logo');
+        figure, imshow(scanim);
+        title('Orignal');
+        figure, imshow(ROI);
+        title('ROI');
+        figure, imshow(RONI);
+        title('RONI');
+        figure, imshow(REALORONI);
+        title('ORONI');
+        figure, imshow(ORONI);
+        title('LSB 0 ORONI');
+        figure, imshow(out);
+        title('scramble');
+        figure, imshow(embed);
+        title('embeded scramble');
+        figure, imshow(reconstruct);
+        title('embeded rescramble');
+        figure, imshow(reconstruct2);
+        title('embeded FULLORONI');
+        figure, imshow(watermarked);
+        title('finalimage');
+    end
+
 end

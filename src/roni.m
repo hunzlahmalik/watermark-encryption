@@ -1,5 +1,5 @@
 function roni_img = roni(ROI, org_img)
-    roni_img = padarray(org_img, [1 1], 0, 'both');
+    roni_img = org_img;
     [row, col] = size(roni_img);
 
     for i = 1:row

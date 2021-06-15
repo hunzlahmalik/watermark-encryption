@@ -22,7 +22,7 @@ function watermark = lsbextract(RONI)
 
     end
 
-    specialimg = newimage(1:endindex - 1);
+    specialimg = newimage(1:endindex);
     watermark = logical(specialimg);
 
 end

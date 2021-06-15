@@ -39,11 +39,11 @@ function FULLRONI = putoroni(ORONI, RONI, ROI)
 
     %testing which range is less than select that one
     if (right - left) < (down - up) %verticle cutting
-        index = 0;
+        index = 1;
 
         for i = 1:cols
 
-            if i < left && i > right
+            if i < left || i > right
                 FULLRONI(:, i) = ORONI(:, i);
                 index = index + 1;
             end
@@ -51,12 +51,12 @@ function FULLRONI = putoroni(ORONI, RONI, ROI)
         end
 
     else %horizontal cutting
-        index = 0;
+        index = 1;
 
         for i = 1:rows
 
-            if i < up && i > down
-                FULLRONI(i) = ORONI(index);
+            if i < up || i > down
+                FULLRONI(i, :) = ORONI(index, :);
                 index = index + 1;
             end
 
