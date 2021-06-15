@@ -22,7 +22,7 @@ function varargout = extractionGUI(varargin)
 
     % Edit the above text to modify the response to help extractionGUI
 
-    % Last Modified by GUIDE v2.5 14-Jun-2021 12:53:43
+    % Last Modified by GUIDE v2.5 15-Jun-2021 22:58:34
 
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -51,7 +51,7 @@ function extractionGUI_OpeningFcn(hObject, eventdata, handles, varargin)
     % This function has no output args, see OutputFcn.
     % hObject    handle to figure
     % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+    % handles    structure with handles and user databox (see GUIDATA)
     % varargin   command line arguments to extractionGUI (see VARARGIN)
 
     % Choose default command line output for extractionGUI
@@ -69,7 +69,7 @@ function varargout = extractionGUI_OutputFcn(hObject, eventdata, handles)
     % varargout  cell array for returning output args (see VARARGOUT);
     % hObject    handle to figure
     % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+    % handles    structure with handles and user databox (see GUIDATA)
 
     % Get default command line output from handles structure
     varargout{1} = handles.output;
@@ -79,12 +79,12 @@ end
 function load_Callback(hObject, eventdata, handles)
     % hObject    handle to load (see GCBO)
     % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+    % handles    structure with handles and user databox (see GUIDATA)
     [file, path] = uigetfile({'*.*'}, 'File Selector');
     img_path = strcat(path, file);
     I = imread(img_path);
     data = struct('I', I);
-    handles.data = data;
+    handles.data0 = data;
     handles.scan = img_path;
     axes(handles.original);
     imshow(I);
@@ -94,7 +94,7 @@ end
 function pass_Callback(hObject, eventdata, handles)
     % hObject    handle to pass (see GCBO)
     % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+    % handles    structure with handles and user databox (see GUIDATA)
 
     % Hints: get(hObject,'String') returns contents of pass as text
     %        str2double(get(hObject,'String')) returns contents of pass as a double
@@ -122,11 +122,11 @@ end
 function show_Callback(hObject, eventdata, handles)
     % hObject    handle to show (see GCBO)
     % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    data = handles.data;
+    % handles    structure with handles and user databox (see GUIDATA)
+    data0 = handles.data0;
     data1 = handles.data1;
     data2 = handles.data2;
-    scanpath = handles.scanF;
+    scanpath = handles.scan;
     keyencryption = data1.P;
     keyscramble = data2.K;
 
@@ -134,21 +134,24 @@ function show_Callback(hObject, eventdata, handles)
 
     axes(handles.new);
     imshow(logo);
-    set(handles.data, 'String', eprdata);
+    fileID = fopen('EPR_extracted.txt', 'w');
+    fprintf(fileID, eprdata);
+    imwrite(logo, 'logo_extracted.png')
+    set(handles.databox, 'String', eprdata);
 end
 
-function data_Callback(hObject, eventdata, handles)
-    % hObject    handle to data (see GCBO)
+function databox_Callback(hObject, eventdata, handles)
+    % hObject    handle to databox (see GCBO)
     % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+    % handles    structure with handles and user databox (see GUIDATA)
 
-    % Hints: get(hObject,'String') returns contents of data as text
-    %        str2double(get(hObject,'String')) returns contents of data as a double
+    % Hints: get(hObject,'String') returns contents of databox as text
+    %        str2double(get(hObject,'String')) returns contents of databox as a double
 end
 
 % --- Executes during object creation, after setting all properties.
-function data_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to data (see GCBO)
+function databox_CreateFcn(hObject, eventdata, handles)
+    % hObject    handle to databox (see GCBO)
     % eventdata  reserved - to be defined in a future version of MATLAB
     % handles    empty - handles not created until after all CreateFcns called
 
@@ -163,7 +166,7 @@ end
 function key_Callback(hObject, eventdata, handles)
     % hObject    handle to key (see GCBO)
     % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+    % handles    structure with handles and user databox (see GUIDATA)
 
     % Hints: get(hObject,'String') returns contents of key as text
     %        str2double(get(hObject,'String')) returns contents of key as a double
