@@ -107,7 +107,7 @@ function embed_btn_Callback(hObject, eventdata, handles)
     axes(handles.axes2);
     imshow(finalim);
     title("Embedded Image");
-    
+
     imwrite(finalim, 'ctscan_watermarked.png');
 
 end
